@@ -60,8 +60,9 @@ individual commits and reasoning):
   root.background`) had no `Behavior` on it at all — the pre-existing
   `Behavior on background` was on a *different*, mostly-static property, so
   it never animated anything that mattered. Added `Behavior on color` on the
-  actual `PanelWindow`, currently 150ms `InOutCubic` (was 280ms, then tuned
-  down once on request — feel free to keep tuning via that one line).
+  actual `PanelWindow`, currently 200ms `InOutCubic` (280ms -> 150ms -> 200ms
+  across a couple of tuning requests — feel free to keep adjusting via that
+  one line).
 - **Fixed ~0.5s of dead air before the fade even started**: `transparent`
   used to flip only after `omarchy-bar-text-color` (an external process doing
   pixel sampling for legible text color, measured ~0.5s wall-clock) finished.
@@ -80,16 +81,22 @@ individual commits and reasoning):
   Feasible, reuses existing plumbing. Caveat: that sampling process is the
   same ~0.5s op already fought once this session — fine on focus-change/
   resize events with debouncing, not something to run continuously.
-- **Hover tooltips for wifi/bluetooth/battery**: infra already exists and is
-  cheap (`MouseArea.onEntered`/`onExited` is pure signal, no polling, and
-  `root.bar.showTooltip(target, text)` is already used by `ActiveWindow.qml`
-  and `Tray.qml` in `widgets/`). Those three widgets live under
-  `/usr/share/omarchy/shell/plugins/panels/{network,bluetooth}/` and
-  `/usr/share/omarchy/shell/plugins/services/battery/` — a different layout
-  than the bar's own `widgets/` folder, so their bar-facing entry points
-  weren't located yet this session. Next step is finding each one's
-  `BarWidget.qml` (c.f. `panels/weather/BarWidget.qml` as a reference
-  pattern) and wiring the same `onEntered`/`onExited` pair.
+- ~~Hover tooltips for wifi/bluetooth/battery~~ — **done**. Turned out to
+  need even less than expected: these three widgets' bar icon is a
+  `BarIconButton` (extends the shared `WidgetButton`), which already wires
+  `onEntered -> root.bar.showTooltip(root, root.tooltipText)` generically —
+  nothing to build, just set `tooltipText:` per widget. Cloned each into its
+  own `archer.*` fork (same pattern as this one — `omarchy plugin clone
+  omarchy.network` / `omarchy.bluetooth` / `omarchy.power`, each now its own
+  git repo in `~/.config/omarchy/plugins/`) since they're system files under
+  `/usr/share/omarchy/shell/plugins/panels/` and `.../services/battery/`,
+  not something to hand-patch in place. Network shows SSID + signal%
+  (or interface name for ethernet); bluetooth shows connected device name(s)
+  via the existing `Model.deviceLabel()` helper; power shows percentage +
+  `root.modeLabel()`. `omarchy plugin clone` swapped each one's `shell.json`
+  layout entry in place automatically (unlike the bar, where `.bar.id`
+  needed `omarchy bar use` by hand) — confirmed via a clean `grim` screenshot
+  of the bar's right section post-restart, all five icons intact.
 
 ## Git workflow going forward
 
