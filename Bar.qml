@@ -1102,7 +1102,7 @@ Item {
     implicitWidth: root.vertical ? root.barSize : 0
     implicitHeight: root.vertical ? 0 : root.barSize
     color: root.transparent ? "transparent" : root.background
-    Behavior on color { ColorAnimation { duration: 150; easing.type: Easing.InOutCubic } }
+    Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.InOutCubic } }
     surfaceFormat.opaque: false
     WlrLayershell.namespace: "omarchy-bar"
     WlrLayershell.layer: WlrLayer.Top
