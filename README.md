@@ -2,6 +2,8 @@
 
 A personal fork of the stock Omarchy bar (`omarchy.bar`, cloned from Omarchy 4.0.2-1 with `omarchy plugin clone omarchy.bar`). Omarchy is MIT-licensed (David Heinemeier Hansson); the code here is that bar plus the changes below.
 
+![Bar transparency by window count](preview.png)
+
 ## What this fork changes
 
 - **Loads as a custom bar.** A fresh clone of `omarchy.bar` doesn't load at all: the host assigns `omarchyPath`, `barWidgetRegistry` and `barConfig` after construction, but `Bar.qml` declares them `required property`, so the bar silently never appears. Those three are now ordinary properties with defaults. Full explanation and a re-apply command are in [`PATCHES.md`](PATCHES.md).
