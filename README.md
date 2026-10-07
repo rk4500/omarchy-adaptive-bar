@@ -1,4 +1,4 @@
-# archer.bar
+# Archer Bar
 
 A personal fork of the stock Omarchy bar (`omarchy.bar`, cloned from Omarchy 4.0.2-1 with `omarchy plugin clone omarchy.bar`). Omarchy is MIT-licensed (David Heinemeier Hansson); the code here is that bar plus the changes below.
 
@@ -16,7 +16,7 @@ A personal fork of the stock Omarchy bar (`omarchy.bar`, cloned from Omarchy 4.0
 
 ```bash
 omarchy plugin add https://github.com/rk4500/omarchy-archer-bar.git --enable
-omarchy bar use archer.bar
+omarchy bar use io.github.rk4500.archer-bar
 omarchy restart shell
 ```
 

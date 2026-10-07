@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "archer.bar",
+  "id": "io.github.rk4500.archer-bar",
   "name": "Archer Bar",
   "version": "1.0.0",
   "author": "rk4500 (fork of the Omarchy bar)",
