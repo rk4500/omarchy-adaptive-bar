@@ -86,7 +86,7 @@ individual commits and reasoning):
   `BarIconButton` (extends the shared `WidgetButton`), which already wires
   `onEntered -> root.bar.showTooltip(root, root.tooltipText)` generically —
   nothing to build, just set `tooltipText:` per widget. Cloned each into its
-  own `archer.*` fork (same pattern as this one — `omarchy plugin clone
+  own `io.github.rk4500.*` fork (originally `archer.*`) (same pattern as this one — `omarchy plugin clone
   omarchy.network` / `omarchy.bluetooth` / `omarchy.power`, each now its own
   git repo in `~/.config/omarchy/plugins/`) since they're system files under
   `/usr/share/omarchy/shell/plugins/panels/` and `.../services/battery/`,
