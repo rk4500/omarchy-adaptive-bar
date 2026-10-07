@@ -1,3 +1,35 @@
+# archer.bar
+
+A personal fork of the stock Omarchy bar (`omarchy.bar`, cloned from Omarchy 4.0.2-1 with `omarchy plugin clone omarchy.bar`). Omarchy is MIT-licensed (David Heinemeier Hansson); the code here is that bar plus the changes below.
+
+## What this fork changes
+
+- **Loads as a custom bar.** A fresh clone of `omarchy.bar` doesn't load at all: the host assigns `omarchyPath`, `barWidgetRegistry` and `barConfig` after construction, but `Bar.qml` declares them `required property`, so the bar silently never appears. Those three are now ordinary properties with defaults. Full explanation and a re-apply command are in [`PATCHES.md`](PATCHES.md).
+- **Automatic transparency by window count.** The bar is opaque only when the focused workspace has exactly one non-floating window, and clear otherwise.
+- **Transparency actually fades.** The stock toggle snapped because the animation was attached to a property that wasn't the one being drawn. There is now a `Behavior on color` on the bar window (200 ms, in-out cubic).
+- **No delay before the fade.** `transparent` used to flip only after `omarchy-bar-text-color` (about 0.5 s of pixel sampling) finished. It now flips immediately, and the sampled text colour fades in on its own.
+- **Hover tooltips on the icons in the bar.** The tooltip text comes from the widgets (Wi-Fi, Bluetooth, battery and sound each have a forked plugin, `omarchy-archer-network`, `-bluetooth`, `-power` and `-audio`).
+
+[`HANDOFF.md`](HANDOFF.md) has the working notes behind these changes and what's still open.
+
+## Install
+
+```bash
+omarchy plugin add https://github.com/rk4500/omarchy-archer-bar.git --enable
+omarchy bar use archer.bar
+omarchy restart shell
+```
+
+`omarchy bar reset` returns to the stock bar. The bar layout still lives under the `bar:` key of `~/.config/omarchy/shell.json`; this plugin only owns the rendering. Some edits (anything driving a `readonly property`, such as `barSize`) need `omarchy restart shell` rather than a hot reload.
+
+This copy is not tracked by Omarchy's own update mechanism: changes to the stock bar don't arrive on their own and have to be merged in.
+
+---
+
+# Original Omarchy bar README
+
+*Everything below is the stock README from `omarchy.bar`, unchanged. It describes the upstream plugin (including its `omarchy.bar` id); where it differs from the above, this fork's notes win.*
+
 # Omarchy bar
 
 This is the Quickshell implementation of the Omarchy status bar. It is
