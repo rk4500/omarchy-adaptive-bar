@@ -1,4 +1,4 @@
-# Archer Bar
+# Adaptive Bar
 
 A personal fork of the stock Omarchy bar (`omarchy.bar`, cloned from Omarchy 4.0.2-1 with `omarchy plugin clone omarchy.bar`). Omarchy is MIT-licensed (David Heinemeier Hansson); the code here is that bar plus the changes below.
 
@@ -10,15 +10,15 @@ A personal fork of the stock Omarchy bar (`omarchy.bar`, cloned from Omarchy 4.0
 - **Automatic transparency by window count.** The bar is opaque only when the focused workspace has exactly one non-floating window, and clear otherwise.
 - **Transparency actually fades.** The stock toggle snapped because the animation was attached to a property that wasn't the one being drawn. There is now a `Behavior on color` on the bar window (200 ms, in-out cubic).
 - **No delay before the fade.** `transparent` used to flip only after `omarchy-bar-text-color` (about 0.5 s of pixel sampling) finished. It now flips immediately, and the sampled text colour fades in on its own.
-- **Hover tooltips on the icons in the bar.** The tooltip text comes from the widgets (Wi-Fi, Bluetooth, battery and sound each have a forked plugin, `omarchy-archer-network`, `-bluetooth`, `-power` and `-audio`).
+- **Hover tooltips on the icons in the bar.** The tooltip text comes from the widgets (Wi-Fi, Bluetooth, battery and sound each have a forked plugin, `omarchy-network-tooltip`, `omarchy-bluetooth-tooltip`, `omarchy-power-tooltip` and `omarchy-audio-tooltip`).
 
 [`HANDOFF.md`](HANDOFF.md) has the working notes behind these changes and what's still open.
 
 ## Install
 
 ```bash
-omarchy plugin add https://github.com/rk4500/omarchy-archer-bar.git --enable
-omarchy bar use io.github.rk4500.archer-bar
+omarchy plugin add https://github.com/rk4500/omarchy-adaptive-bar.git --enable
+omarchy bar use io.github.rk4500.adaptive-bar
 omarchy restart shell
 ```
 

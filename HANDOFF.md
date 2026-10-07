@@ -1,4 +1,4 @@
-# Handoff: io.github.rk4500.archer-bar
+# Handoff: io.github.rk4500.adaptive-bar
 
 ## What this is
 
@@ -11,7 +11,7 @@ added to the IPC handler, restarted, and checked for in the live target list).
 It is **not** a git-managed plugin in Omarchy's sense (that term means
 installed via `omarchy plugin add <git-url>`, which tracks a remote and
 supports `omarchy plugin update <id>`). A `clone` is a one-time file copy with
-no `.git` and no update path — `omarchy plugin update io.github.rk4500.archer-bar` will refuse
+no `.git` and no update path — `omarchy plugin update io.github.rk4500.adaptive-bar` will refuse
 outright ("not a git checkout"). This repo was `git init`'d locally after the
 fact, purely for the user's own change history; it has no relationship to
 Omarchy's own update machinery and Omarchy will never fetch into or touch it.
@@ -27,7 +27,7 @@ picks up upstream bug fixes or new features on its own. Two risks to watch:
 
    ```
    diff -u /usr/share/omarchy/shell/plugins/bar/Bar.qml \
-           ~/.config/omarchy/plugins/io.github.rk4500.archer-bar/Bar.qml
+           ~/.config/omarchy/plugins/io.github.rk4500.adaptive-bar/Bar.qml
    ```
 
    (Source path confirmed via `omarchy-plugin-catalog | jq '.[] | select(.id=="omarchy.bar")'`.)
@@ -45,7 +45,7 @@ be isolated to a specific change instead of debugged from scratch.
 
 ## What changed this session (2026-10-06)
 
-All in `Bar.qml`, confirmed live only after discovering `io.github.rk4500.archer-bar` wasn't
+All in `Bar.qml`, confirmed live only after discovering `io.github.rk4500.adaptive-bar` wasn't
 actually the active bar for most of the session (see git log for the
 individual commits and reasoning):
 

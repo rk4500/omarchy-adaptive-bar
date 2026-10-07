@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "io.github.rk4500.archer-bar",
-  "name": "Archer Bar",
+  "id": "io.github.rk4500.adaptive-bar",
+  "name": "Adaptive Bar",
   "version": "1.0.0",
-  "author": "rk4500 (fork of the Omarchy bar)",
+  "author": "rk4500 (fork of Omarchy)",
   "description": "Fork of the Omarchy bar that loads as a custom bar, with automatic transparency by window count and a fading transparency toggle.",
   "kinds": [
     "bar"
@@ -14,5 +14,5 @@
   "omarchy": {
     "clonedFrom": "omarchy.bar"
   },
-  "homepage": "https://github.com/rk4500/omarchy-archer-bar"
+  "homepage": "https://github.com/rk4500/omarchy-adaptive-bar"
 }
