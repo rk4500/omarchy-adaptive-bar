@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "archer.bar",
-  "name": "My Bar",
+  "id": "io.github.rk4500.archer-bar",
+  "name": "Archer Bar",
   "version": "1.0.0",
   "author": "Omarchy",
   "description": "Status bar with widgets",
