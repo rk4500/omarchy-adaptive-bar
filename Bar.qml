@@ -71,11 +71,15 @@ Item {
   property color background: Color.bar.background
   property color urgent: Color.bar.active
 
-  // Auto transparency: opaque only when the focused workspace has exactly
-  // one non-floating (tiled) window, clear otherwise (none, several, or only
-  // floating windows). Overrides the double-click/persisted setting on the
-  // next relevant Hyprland event; a manual double-click holds until then.
+  // Auto transparency: opaque only when a workspace has exactly one
+  // non-floating (tiled) window, clear otherwise (none, several, or only
+  // floating windows). It is decided per bar surface, from the workspace that
+  // surface's own monitor shows (see BarPanel), not from whichever workspace
+  // has focus, so moving focus to another monitor no longer repaints an
+  // untouched bar. A manual toggle (double-click or `omarchy bar transparent`)
+  // still applies to every surface and holds until the next Hyprland event.
   property int autoTransparencyRevision: 0
+  property bool manualTransparency: false
 
   readonly property int focusedTiledWindowCount: {
     autoTransparencyRevision
@@ -90,8 +94,30 @@ Item {
     return count
   }
 
+  // Tiled window count for the workspace a Quickshell screen shows. Reading
+  // `autoTransparencyRevision` keeps the caller's binding live, and
+  // monitorFor() maps the bar's own screen to its Hyprland monitor.
+  function tiledWindowCountForScreen(screen) {
+    autoTransparencyRevision
+    if (!screen) return 0
+    var monitor = Hyprland.monitorFor(screen)
+    var ws = monitor ? monitor.activeWorkspace : null
+    if (!ws) return 0
+    var tops = ws.toplevels.values
+    var count = 0
+    for (var i = 0; i < tops.length; i++) {
+      var ipc = tops[i].lastIpcObject
+      if (ipc && ipc.floating !== true) count++
+    }
+    return count
+  }
+
+  // The focused workspace still drives the shared text colour and the auxiliary
+  // surfaces (drag ghosts, drag-source highlights); each bar surface's own
+  // background is decided in BarPanel. Passing manual=false keeps the per-panel
+  // rule in charge; only a real toggle sets manualTransparency.
   function applyAutoTransparency() {
-    root.setRequestedTransparency(root.focusedTiledWindowCount !== 1)
+    root.setRequestedTransparency(root.focusedTiledWindowCount !== 1, false)
   }
 
   onFocusedTiledWindowCountChanged: applyAutoTransparency()
@@ -118,6 +144,9 @@ Item {
     id: autoTransparencyDebounce
     interval: 120
     onTriggered: {
+      // A manual toggle holds only until the next relevant Hyprland event;
+      // from here on the per-surface rule takes over again.
+      root.manualTransparency = false
       Hyprland.refreshToplevels()
       autoTransparencyRevisionBump.restart()
     }
@@ -414,7 +443,7 @@ Item {
     var config = Util.isPlainObject(barConfig) ? barConfig : fallbackBarConfig
 
     position = normalizePosition(config.position)
-    setRequestedTransparency(config.transparent === true)
+    setRequestedTransparency(config.transparent === true, true)
     centerAnchor = Util.canonicalWidgetId(config.centerAnchor || "")
 
     // layoutEntries feeds plain JS arrays to the module Repeaters, and QML
@@ -641,6 +670,9 @@ Item {
     applyBarConfig()
     Hyprland.refreshToplevels()
     applyAutoTransparency()
+    // Start in auto mode: the persisted value is only a manual hold, which
+    // auto transparency is allowed to override from the first event on.
+    manualTransparency = false
     autoTransparencyRevisionBump.restart()
   }
 
@@ -685,7 +717,7 @@ Item {
         config.bar.transparent = nextTransparent
       })
     } else {
-      root.setRequestedTransparency(nextTransparent)
+      root.setRequestedTransparency(nextTransparent, true)
     }
   }
 
@@ -862,7 +894,8 @@ Item {
     return "#" + hexChannel(c.r) + hexChannel(c.g) + hexChannel(c.b)
   }
 
-  function setRequestedTransparency(value) {
+  function setRequestedTransparency(value, manual) {
+    if (manual === true) manualTransparency = true
     var nextTransparent = value === true
     requestedTransparent = nextTransparent
     if (!nextTransparent) {
@@ -1072,6 +1105,14 @@ Item {
   component BarPanel: PanelWindow {
     id: barWindow
 
+    // Background transparency is per surface, from the workspace this
+    // surface's own monitor shows. The shared `root.transparent` follows the
+    // focused workspace and still drives the text colour and drag surfaces;
+    // only a manual toggle makes a surface defer to it.
+    readonly property int tiledWindowCount: root.tiledWindowCountForScreen(barWindow.screen)
+    readonly property bool autoTransparent: tiledWindowCount !== 1
+    readonly property bool panelTransparent: root.manualTransparency ? root.transparent : autoTransparent
+
     // Hiding parks the bar just past its screen edge instead of unmapping it.
     // Unmapping frees the layer surface and the whole scene graph, so every
     // reveal has to rebuild them — new surface, re-shaped glyphs, re-uploaded
@@ -1101,7 +1142,7 @@ Item {
 
     implicitWidth: root.vertical ? root.barSize : 0
     implicitHeight: root.vertical ? 0 : root.barSize
-    color: root.transparent ? "transparent" : root.background
+    color: barWindow.panelTransparent ? "transparent" : root.background
     Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.InOutCubic } }
     surfaceFormat.opaque: false
     WlrLayershell.namespace: "omarchy-bar"
